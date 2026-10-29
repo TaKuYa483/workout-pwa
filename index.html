@@ -1,0 +1,3249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>筋トレ・体重・栄養記録</title>
+  <style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  background: #f3f4f6;
+  color: #111;
+}
+
+.container {
+  max-width: 720px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+h2 {
+  margin-top: 25px;
+}
+
+h3 {
+  margin: 0;
+}
+
+.section-title {
+  margin-top: 36px;
+  margin-bottom: 12px;
+}
+
+.card,
+.chart-card,
+.calendar-card,
+.filter-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.card {
+  padding: 22px;
+}
+
+.compact-card {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.edit-notice {
+  padding: 12px;
+  margin-bottom: 15px;
+  background: #fff3cd;
+  border: 1px solid #ffe69c;
+  border-radius: 9px;
+  font-weight: bold;
+  text-align: center;
+}
+
+label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 7px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 9px;
+  background: white;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #444;
+}
+
+.input-with-unit {
+  display: grid;
+  grid-template-columns: 1fr 52px;
+  gap: 8px;
+  align-items: center;
+}
+
+.input-with-unit span {
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+}
+
+.input-note {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #777;
+}
+
+.subheading {
+  margin-top: 24px;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.target-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.target-input-area label {
+  margin-top: 0;
+}
+
+.meal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.meal-grid > div label {
+  margin-top: 8px;
+}
+
+.meal-grid-wide {
+  grid-column: 1 / -1;
+}
+
+.protein-total-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
+.protein-total-box strong,
+.muted-label {
+  display: block;
+}
+
+.protein-total-box strong {
+  margin-top: 4px;
+  font-size: 22px;
+}
+
+.muted-label {
+  color: #777;
+  font-size: 12px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 10px;
+  margin-top: 10px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: #222;
+  border-radius: inherit;
+  transition: width 0.2s ease;
+}
+
+.previous-record {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  line-height: 1.7;
+}
+
+.previous-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.set-header {
+  display: grid;
+  grid-template-columns: 45px 1fr 1fr 40px;
+  gap: 8px;
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.set-row {
+  display: grid;
+  grid-template-columns: 45px 1fr 1fr 40px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.set-number {
+  text-align: center;
+  font-weight: bold;
+}
+
+.set-row input {
+  text-align: center;
+}
+
+button {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.delete-set {
+  border: none;
+  background: #eee;
+  border-radius: 8px;
+  height: 42px;
+  font-size: 18px;
+}
+
+.primary-button,
+.secondary-button,
+.cancel-button,
+.small-primary-button {
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.primary-button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 15px;
+  border: none;
+  background: #222;
+  color: white;
+}
+
+.secondary-button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: 1px solid #222;
+  background: white;
+  color: #111;
+}
+
+.cancel-button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: 1px solid #777;
+  background: white;
+  color: #555;
+}
+
+.small-primary-button {
+  padding: 12px 16px;
+  border: none;
+  background: #222;
+  color: white;
+  white-space: nowrap;
+}
+
+.primary-button:hover,
+.small-primary-button:hover,
+.secondary-button:hover,
+.cancel-button:hover,
+.edit-workout:hover,
+.edit-daily-log:hover,
+.delete-workout:hover,
+.delete-daily-log:hover,
+.calendar-nav-button:hover {
+  opacity: 0.82;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat-card {
+  background: white;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.stat-card-wide {
+  grid-column: 1 / -1;
+}
+
+.stat-title {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 7px;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.stat-subtext {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #777;
+}
+
+.chart-card {
+  padding: 15px;
+}
+
+.chart-note {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+#weightChart,
+#exerciseChart {
+  display: block;
+  width: 100%;
+  height: 280px;
+}
+
+.analysis-chart-card {
+  margin-top: 12px;
+}
+
+.analysis-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.mini-stat {
+  padding: 14px;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
+.mini-stat-wide {
+  grid-column: 1 / -1;
+}
+
+.mini-stat span,
+.mini-stat strong {
+  display: block;
+}
+
+.mini-stat span {
+  color: #777;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.mini-stat strong {
+  font-size: 20px;
+}
+
+.calendar-card {
+  padding: 16px;
+}
+
+.calendar-toolbar {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.calendar-nav-button {
+  height: 40px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 10px;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.calendar-month-label {
+  text-align: center;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-weekdays {
+  margin-bottom: 6px;
+  color: #666;
+  font-size: 12px;
+  text-align: center;
+}
+
+.calendar-day,
+.calendar-empty {
+  min-height: 88px;
+}
+
+.calendar-day {
+  margin: 2px;
+  padding: 7px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.calendar-day.today {
+  border-width: 2px;
+  border-color: #222;
+}
+
+.calendar-day.target-achieved {
+  background: #f0fdf4;
+}
+
+.calendar-date-number {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.calendar-data {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  line-height: 1.3;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calendar-data.achievement {
+  font-weight: bold;
+}
+
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.daily-history-card,
+.history-card {
+  background: white;
+  margin-bottom: 12px;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.daily-history-date,
+.history-date {
+  color: #777;
+  font-size: 14px;
+}
+
+.daily-history-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.daily-history-values > div {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.daily-history-values span,
+.daily-history-values strong {
+  display: block;
+}
+
+.daily-history-values span {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 4px;
+}
+
+.daily-history-values strong {
+  font-size: 18px;
+}
+
+.daily-meal-detail {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #555;
+}
+
+.history-title {
+  margin-top: 40px;
+  margin-bottom: 12px;
+}
+
+.filter-card {
+  padding: 14px 18px;
+  margin-bottom: 15px;
+}
+
+.filter-card label {
+  margin-top: 0;
+}
+
+.history-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.body-part-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #eee;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.history-exercise {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.history-set {
+  padding: 4px 0;
+  font-size: 16px;
+}
+
+.history-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.edit-workout,
+.edit-daily-log,
+.delete-workout,
+.delete-daily-log {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+}
+
+.edit-workout,
+.edit-daily-log {
+  background: #222;
+  color: white;
+}
+
+.delete-workout,
+.delete-daily-log {
+  background: #eee;
+  color: #111;
+}
+
+.data-button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.data-button-grid .secondary-button {
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+
+  .card {
+    padding: 17px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+  }
+
+  .meal-grid,
+  .data-button-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .meal-grid-wide {
+    grid-column: auto;
+  }
+
+  .target-row {
+    grid-template-columns: 1fr;
+  }
+
+  .small-primary-button {
+    width: 100%;
+  }
+
+  .calendar-day,
+  .calendar-empty {
+    min-height: 76px;
+  }
+
+  .calendar-day {
+    padding: 5px;
+  }
+
+  .calendar-data {
+    font-size: 9px;
+  }
+}
+
+
+/* =========================
+   タブナビゲーション
+========================= */
+.app-header {
+  margin-bottom: 18px;
+}
+
+.app-header h1 {
+  margin-bottom: 6px;
+}
+
+.app-subtitle {
+  margin: 0;
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+}
+
+.tab-nav-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  margin: 0 -8px 20px;
+  padding: 10px 8px;
+  background: rgba(243, 244, 246, 0.94);
+  backdrop-filter: blur(10px);
+}
+
+.tab-nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+  padding: 6px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.08);
+}
+
+.tab-button {
+  min-width: 0;
+  padding: 10px 5px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #666;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tab-button.active {
+  background: #222;
+  color: white;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.tab-section-heading {
+  margin: 0 0 14px;
+  font-size: 24px;
+}
+
+/* =========================
+   ホーム
+========================= */
+.home-hero {
+  padding: 22px;
+  margin-bottom: 14px;
+  background: #222;
+  color: white;
+  border-radius: 18px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+}
+
+.home-date {
+  font-size: 13px;
+  opacity: 0.72;
+  margin-bottom: 6px;
+}
+
+.home-hero-title {
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.home-hero-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.84;
+}
+
+.home-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.home-summary-card {
+  background: white;
+  padding: 17px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.home-summary-card.wide {
+  grid-column: 1 / -1;
+}
+
+.home-summary-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #777;
+  font-size: 12px;
+}
+
+.home-summary-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.home-summary-sub {
+  margin-top: 5px;
+  color: #777;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.home-progress-track {
+  width: 100%;
+  height: 10px;
+  margin-top: 11px;
+  overflow: hidden;
+  background: #e5e7eb;
+  border-radius: 999px;
+}
+
+.home-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: #222;
+  border-radius: inherit;
+  transition: width 0.2s ease;
+}
+
+.home-week-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.home-week-item {
+  padding: 13px 8px;
+  text-align: center;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
+.home-week-item span,
+.home-week-item strong {
+  display: block;
+}
+
+.home-week-item span {
+  color: #777;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+
+.home-week-item strong {
+  font-size: 18px;
+}
+
+.home-last-workout {
+  margin-top: 12px;
+  padding: 14px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  line-height: 1.6;
+}
+
+.home-last-workout-title {
+  display: block;
+  color: #777;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.home-last-workout strong {
+  font-size: 17px;
+}
+
+.quick-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.quick-action-button {
+  min-height: 52px;
+  padding: 11px;
+  border: 1px solid #222;
+  border-radius: 12px;
+  background: white;
+  color: #111;
+  font-weight: 800;
+}
+
+.quick-action-button.primary {
+  background: #222;
+  color: white;
+}
+
+.panel-spacer {
+  height: 6px;
+}
+
+@media (max-width: 600px) {
+  .tab-nav-wrap {
+    margin-left: -4px;
+    margin-right: -4px;
+  }
+
+  .tab-nav {
+    gap: 4px;
+    padding: 5px;
+  }
+
+  .tab-button {
+    padding: 9px 2px;
+    font-size: 11px;
+  }
+
+  .home-summary-value {
+    font-size: 21px;
+  }
+
+  .home-week-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 7px;
+  }
+
+  .home-week-item {
+    padding: 11px 5px;
+  }
+
+  .home-week-item strong {
+    font-size: 15px;
+  }
+}
+
+  </style>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#17253b">
+</head>
+
+<body>
+  <div class="container">
+    <header class="app-header">
+      <h1>筋トレ記録</h1>
+      <p class="app-subtitle">トレーニング・体重・栄養をまとめて記録</p>
+    </header>
+
+    <div class="tab-nav-wrap">
+      <nav class="tab-nav" aria-label="メインメニュー">
+        <button class="tab-button active" type="button" data-tab="home">ホーム</button>
+        <button class="tab-button" type="button" data-tab="workout">筋トレ</button>
+        <button class="tab-button" type="button" data-tab="daily">体重・食事</button>
+        <button class="tab-button" type="button" data-tab="analysis">分析</button>
+        <button class="tab-button" type="button" data-tab="settings">設定</button>
+      </nav>
+    </div>
+
+    <!-- =========================
+         ホーム
+    ========================== -->
+    <main id="tab-home" class="tab-panel active" data-tab-panel="home">
+      <section class="home-hero">
+        <div id="homeDateLabel" class="home-date">--</div>
+        <div class="home-hero-title">今日のコンディション</div>
+        <p class="home-hero-text">記録した体重・タンパク質・今週のトレーニングをまとめて確認できます。</p>
+      </section>
+
+      <div class="home-summary-grid">
+        <div class="home-summary-card">
+          <span class="home-summary-label">現在体重</span>
+          <strong id="homeWeightValue" class="home-summary-value">-- kg</strong>
+          <div id="homeWeightChange" class="home-summary-sub">前回比 --</div>
+        </div>
+
+        <div class="home-summary-card">
+          <span class="home-summary-label">体重 7日平均</span>
+          <strong id="homeWeightAverage" class="home-summary-value">-- kg</strong>
+          <div class="home-summary-sub">日々の増減をならした値</div>
+        </div>
+
+        <div class="home-summary-card wide">
+          <span class="home-summary-label">今日のタンパク質</span>
+          <strong id="homeProteinValue" class="home-summary-value">-- / -- g</strong>
+          <div id="homeProteinStatus" class="home-summary-sub">まだ記録がありません</div>
+          <div class="home-progress-track">
+            <div id="homeProteinProgressBar" class="home-progress-bar"></div>
+          </div>
+        </div>
+
+        <div class="home-summary-card wide">
+          <span class="home-summary-label">今週のトレーニング</span>
+          <div class="home-week-grid">
+            <div class="home-week-item">
+              <span>トレ日数</span>
+              <strong id="homeWeekWorkoutDays">0日</strong>
+            </div>
+            <div class="home-week-item">
+              <span>セット数</span>
+              <strong id="homeWeekSets">0</strong>
+            </div>
+            <div class="home-week-item">
+              <span>総ボリューム</span>
+              <strong id="homeWeekVolume">0kg</strong>
+            </div>
+          </div>
+
+          <div class="home-last-workout">
+            <span class="home-last-workout-title">直近のトレーニング</span>
+            <strong id="homeLastWorkout">まだ記録がありません</strong>
+            <div id="homeLastWorkoutDetail" class="home-summary-sub"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-action-grid">
+        <button class="quick-action-button primary" type="button" data-open-tab="workout">＋ 筋トレを記録</button>
+        <button class="quick-action-button" type="button" data-open-tab="daily">＋ 体重・食事を記録</button>
+      </div>
+    </main>
+
+    <!-- =========================
+         筋トレ
+    ========================== -->
+    <main id="tab-workout" class="tab-panel" data-tab-panel="workout">
+      <h2 class="tab-section-heading">トレーニング</h2>
+
+      <section class="card">
+        <div id="editNotice" class="edit-notice" style="display: none;">
+          このトレーニング記録を編集中です
+        </div>
+
+        <label for="date">日付</label>
+        <input type="date" id="date">
+
+        <label for="bodyPart">部位</label>
+        <select id="bodyPart">
+          <option value="">部位を選択</option>
+          <option value="胸">胸</option>
+          <option value="背中">背中</option>
+          <option value="脚">脚</option>
+          <option value="肩">肩</option>
+          <option value="腕">腕</option>
+          <option value="腹">腹</option>
+          <option value="その他">その他</option>
+        </select>
+
+        <label for="exercise">種目</label>
+        <input type="text" id="exercise" list="exerciseList" placeholder="部位を選ぶと種目が表示されます">
+        <datalist id="exerciseList"></datalist>
+
+        <div id="previousRecord" class="previous-record">
+          <div class="previous-title">前回の記録</div>
+          <div id="previousContent">種目を入力すると表示されます</div>
+        </div>
+
+        <h2>セット</h2>
+        <div class="set-header">
+          <span>SET</span><span>重量 kg</span><span>回数</span><span></span>
+        </div>
+
+        <div id="setsContainer"></div>
+
+        <button id="addSetButton" class="secondary-button" type="button">＋ セット追加</button>
+        <button id="saveButton" class="primary-button" type="button">トレーニングを保存</button>
+        <button id="cancelEditButton" class="cancel-button" type="button" style="display: none;">編集をキャンセル</button>
+      </section>
+
+      <h2 class="history-title">トレーニング履歴</h2>
+      <section class="filter-card">
+        <label for="historyFilter">表示する部位</label>
+        <select id="historyFilter">
+          <option value="すべて">すべて</option>
+          <option value="胸">胸</option>
+          <option value="背中">背中</option>
+          <option value="脚">脚</option>
+          <option value="肩">肩</option>
+          <option value="腕">腕</option>
+          <option value="腹">腹</option>
+          <option value="その他">その他</option>
+          <option value="未分類">未分類</option>
+        </select>
+      </section>
+      <div id="history"></div>
+    </main>
+
+    <!-- =========================
+         体重・食事
+    ========================== -->
+    <main id="tab-daily" class="tab-panel" data-tab-panel="daily">
+      <h2 class="tab-section-heading">体重・食事</h2>
+
+      <h2 class="section-title">タンパク質目標</h2>
+      <section class="card compact-card">
+        <div class="target-row">
+          <div class="target-input-area">
+            <label for="proteinTarget">1日の目標</label>
+            <div class="input-with-unit">
+              <input type="number" id="proteinTarget" min="1" step="1" placeholder="120">
+              <span>g</span>
+            </div>
+          </div>
+          <button id="saveTargetButton" class="small-primary-button" type="button">目標を保存</button>
+        </div>
+      </section>
+
+      <h2 id="dailySection" class="section-title">今日の記録</h2>
+      <section class="card">
+        <div id="dailyEditNotice" class="edit-notice" style="display: none;">この体重・栄養記録を編集中です</div>
+
+        <label for="dailyDate">日付</label>
+        <input type="date" id="dailyDate">
+
+        <label for="weight">体重</label>
+        <div class="input-with-unit">
+          <input type="number" id="weight" placeholder="例：62.5" step="0.1" min="0">
+          <span>kg</span>
+        </div>
+
+        <h3 class="subheading">食事ごとのタンパク質</h3>
+        <div class="meal-grid">
+          <div>
+            <label for="proteinBreakfast">朝</label>
+            <div class="input-with-unit"><input type="number" id="proteinBreakfast" min="0" step="1" placeholder="25"><span>g</span></div>
+          </div>
+          <div>
+            <label for="proteinLunch">昼</label>
+            <div class="input-with-unit"><input type="number" id="proteinLunch" min="0" step="1" placeholder="35"><span>g</span></div>
+          </div>
+          <div>
+            <label for="proteinDinner">夜</label>
+            <div class="input-with-unit"><input type="number" id="proteinDinner" min="0" step="1" placeholder="40"><span>g</span></div>
+          </div>
+          <div>
+            <label for="proteinSnack">間食</label>
+            <div class="input-with-unit"><input type="number" id="proteinSnack" min="0" step="1" placeholder="20"><span>g</span></div>
+          </div>
+          <div class="meal-grid-wide">
+            <label for="proteinOther">その他・プロテイン</label>
+            <div class="input-with-unit"><input type="number" id="proteinOther" min="0" step="1" placeholder="25"><span>g</span></div>
+          </div>
+        </div>
+
+        <div class="protein-total-box">
+          <div><span class="muted-label">今日の合計</span><strong id="proteinTotalValue">0 g</strong></div>
+          <div><span class="muted-label">目標達成率</span><strong id="proteinAchievementValue">0%</strong></div>
+        </div>
+        <div class="progress-track" aria-label="タンパク質目標達成率"><div id="proteinProgressBar" class="progress-bar"></div></div>
+
+        <p class="input-note">体重だけ、またはタンパク質だけでも保存できます。以前の合計タンパク質記録は「その他・プロテイン」として引き継がれます。</p>
+
+        <button id="saveDailyButton" class="primary-button" type="button">体重・栄養記録を保存</button>
+        <button id="cancelDailyEditButton" class="cancel-button" type="button" style="display: none;">編集をキャンセル</button>
+      </section>
+
+      <h2 class="section-title">体重・栄養履歴</h2>
+      <div id="dailyHistory"></div>
+    </main>
+
+    <!-- =========================
+         分析
+    ========================== -->
+    <main id="tab-analysis" class="tab-panel" data-tab-panel="analysis">
+      <h2 class="tab-section-heading">分析</h2>
+
+      <h2 class="section-title">現在のデータ</h2>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-title">現在体重</div><div id="currentWeightValue" class="stat-value">-- kg</div></div>
+        <div class="stat-card"><div class="stat-title">体重 前回比</div><div id="weightChangeValue" class="stat-value">-- kg</div></div>
+        <div class="stat-card"><div class="stat-title">体重 7日平均</div><div id="weightAverageValue" class="stat-value">-- kg</div></div>
+        <div class="stat-card"><div class="stat-title">タンパク質 7日平均</div><div id="proteinAverageValue" class="stat-value">-- g</div></div>
+        <div class="stat-card stat-card-wide">
+          <div class="stat-title">今日のタンパク質</div>
+          <div id="todayProteinValue" class="stat-value">-- / -- g</div>
+          <div id="todayProteinStatus" class="stat-subtext">まだ記録がありません</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">体重推移</h2>
+      <section class="chart-card"><div class="chart-note">直近30回の体重記録</div><canvas id="weightChart"></canvas></section>
+
+      <h2 class="section-title">月間カレンダー</h2>
+      <section class="calendar-card">
+        <div class="calendar-toolbar">
+          <button id="previousMonthButton" class="calendar-nav-button" type="button">‹</button>
+          <div id="calendarMonthLabel" class="calendar-month-label"></div>
+          <button id="nextMonthButton" class="calendar-nav-button" type="button">›</button>
+        </div>
+        <div class="calendar-weekdays"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+        <div class="calendar-legend"><span>✓ タンパク質目標達成</span><span>🏋 トレーニングあり</span></div>
+      </section>
+
+      <h2 class="section-title">自己ベスト・重量推移</h2>
+      <section class="card">
+        <label for="analysisExercise">分析する種目</label>
+        <select id="analysisExercise"></select>
+        <div class="analysis-stats">
+          <div class="mini-stat"><span>最高重量</span><strong id="maxWeightValue">-- kg</strong></div>
+          <div class="mini-stat"><span>推定1RM</span><strong id="estimatedOneRmValue">-- kg</strong></div>
+          <div class="mini-stat mini-stat-wide"><span>最新記録</span><strong id="latestExerciseValue">--</strong></div>
+        </div>
+        <p class="input-note">推定1RMは Epley式「重量 × (1 + 回数 ÷ 30)」で計算します。</p>
+      </section>
+      <section class="chart-card analysis-chart-card"><div class="chart-note">各トレーニング日の最高重量（直近30回）</div><canvas id="exerciseChart"></canvas></section>
+    </main>
+
+    <!-- =========================
+         設定
+    ========================== -->
+    <main id="tab-settings" class="tab-panel" data-tab-panel="settings">
+      <h2 class="tab-section-heading">設定・データ管理</h2>
+      <section class="card">
+        <div class="data-button-grid">
+          <button id="exportBackupButton" class="secondary-button" type="button">バックアップ(JSON)保存</button>
+          <button id="importBackupButton" class="secondary-button" type="button">バックアップを読み込む</button>
+          <button id="exportDailyCsvButton" class="secondary-button" type="button">体重・栄養CSV</button>
+          <button id="exportWorkoutCsvButton" class="secondary-button" type="button">筋トレCSV</button>
+        </div>
+        <input id="backupFileInput" type="file" accept="application/json,.json" style="display: none;">
+        <p class="input-note">JSONバックアップには筋トレ、体重・栄養、タンパク質目標をまとめて保存します。</p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+"use strict";
+
+// =========================================
+// 保存キー
+// =========================================
+
+const WORKOUT_STORAGE_KEY = "workoutSessionsV2";
+const DAILY_STORAGE_KEY = "dailyBodyLogsV1";
+const SETTINGS_STORAGE_KEY = "workoutAppSettingsV1";
+
+
+// =========================================
+// HTML要素
+// =========================================
+
+const dateInput = document.getElementById("date");
+const bodyPartInput = document.getElementById("bodyPart");
+const exerciseInput = document.getElementById("exercise");
+const exerciseList = document.getElementById("exerciseList");
+const setsContainer = document.getElementById("setsContainer");
+const addSetButton = document.getElementById("addSetButton");
+const saveButton = document.getElementById("saveButton");
+const cancelEditButton = document.getElementById("cancelEditButton");
+const editNotice = document.getElementById("editNotice");
+const historyDiv = document.getElementById("history");
+const previousContent = document.getElementById("previousContent");
+const historyFilter = document.getElementById("historyFilter");
+
+const proteinTargetInput = document.getElementById("proteinTarget");
+const saveTargetButton = document.getElementById("saveTargetButton");
+
+const dailyDateInput = document.getElementById("dailyDate");
+const weightInput = document.getElementById("weight");
+const proteinBreakfastInput = document.getElementById("proteinBreakfast");
+const proteinLunchInput = document.getElementById("proteinLunch");
+const proteinDinnerInput = document.getElementById("proteinDinner");
+const proteinSnackInput = document.getElementById("proteinSnack");
+const proteinOtherInput = document.getElementById("proteinOther");
+const proteinTotalValue = document.getElementById("proteinTotalValue");
+const proteinAchievementValue = document.getElementById("proteinAchievementValue");
+const proteinProgressBar = document.getElementById("proteinProgressBar");
+const saveDailyButton = document.getElementById("saveDailyButton");
+const cancelDailyEditButton = document.getElementById("cancelDailyEditButton");
+const dailyEditNotice = document.getElementById("dailyEditNotice");
+
+const currentWeightValue = document.getElementById("currentWeightValue");
+const weightChangeValue = document.getElementById("weightChangeValue");
+const weightAverageValue = document.getElementById("weightAverageValue");
+const proteinAverageValue = document.getElementById("proteinAverageValue");
+const todayProteinValue = document.getElementById("todayProteinValue");
+const todayProteinStatus = document.getElementById("todayProteinStatus");
+const dailyHistoryDiv = document.getElementById("dailyHistory");
+const weightChart = document.getElementById("weightChart");
+
+const previousMonthButton = document.getElementById("previousMonthButton");
+const nextMonthButton = document.getElementById("nextMonthButton");
+const calendarMonthLabel = document.getElementById("calendarMonthLabel");
+const calendarGrid = document.getElementById("calendarGrid");
+
+const analysisExercise = document.getElementById("analysisExercise");
+const maxWeightValue = document.getElementById("maxWeightValue");
+const estimatedOneRmValue = document.getElementById("estimatedOneRmValue");
+const latestExerciseValue = document.getElementById("latestExerciseValue");
+const exerciseChart = document.getElementById("exerciseChart");
+
+const exportBackupButton = document.getElementById("exportBackupButton");
+const importBackupButton = document.getElementById("importBackupButton");
+const exportDailyCsvButton = document.getElementById("exportDailyCsvButton");
+const exportWorkoutCsvButton = document.getElementById("exportWorkoutCsvButton");
+const backupFileInput = document.getElementById("backupFileInput");
+
+
+// タブ・ホーム画面
+const tabButtons = document.querySelectorAll(".tab-button");
+const tabPanels = document.querySelectorAll(".tab-panel");
+const quickTabButtons = document.querySelectorAll("[data-open-tab]");
+
+const homeDateLabel = document.getElementById("homeDateLabel");
+const homeWeightValue = document.getElementById("homeWeightValue");
+const homeWeightChange = document.getElementById("homeWeightChange");
+const homeWeightAverage = document.getElementById("homeWeightAverage");
+const homeProteinValue = document.getElementById("homeProteinValue");
+const homeProteinStatus = document.getElementById("homeProteinStatus");
+const homeProteinProgressBar = document.getElementById("homeProteinProgressBar");
+const homeWeekWorkoutDays = document.getElementById("homeWeekWorkoutDays");
+const homeWeekSets = document.getElementById("homeWeekSets");
+const homeWeekVolume = document.getElementById("homeWeekVolume");
+const homeLastWorkout = document.getElementById("homeLastWorkout");
+const homeLastWorkoutDetail = document.getElementById("homeLastWorkoutDetail");
+
+
+// =========================================
+// 状態
+// =========================================
+
+let editingWorkoutId = null;
+let editingDailyLogId = null;
+let calendarDate = new Date();
+calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
+
+
+// =========================================
+// 部位ごとの種目
+// =========================================
+
+const exercisesByBodyPart = {
+  胸: [
+    "ベンチプレス",
+    "インクラインベンチプレス",
+    "ダンベルプレス",
+    "インクラインダンベルプレス",
+    "ダンベルフライ",
+    "チェストプレス"
+  ],
+
+  背中: [
+    "デッドリフト",
+    "ラットプルダウン",
+    "懸垂",
+    "ベントオーバーロー",
+    "シーテッドロー",
+    "ワンハンドロー"
+  ],
+
+  脚: [
+    "スクワット",
+    "レッグプレス",
+    "レッグエクステンション",
+    "レッグカール",
+    "ブルガリアンスクワット",
+    "カーフレイズ"
+  ],
+
+  肩: [
+    "ショルダープレス",
+    "サイドレイズ",
+    "フロントレイズ",
+    "リアレイズ"
+  ],
+
+  腕: [
+    "アームカール",
+    "ハンマーカール",
+    "スカルクラッシャー",
+    "トライセプスプレスダウン",
+    "フレンチプレス"
+  ],
+
+  腹: [
+    "クランチ",
+    "アブローラー",
+    "レッグレイズ",
+    "プランク"
+  ],
+
+  その他: []
+};
+
+
+const exerciseBodyPartMap = {};
+
+Object.entries(exercisesByBodyPart).forEach(([bodyPart, exercises]) => {
+  exercises.forEach(exercise => {
+    exerciseBodyPartMap[exercise] = bodyPart;
+  });
+});
+
+
+// =========================================
+// ユーティリティ
+// =========================================
+
+function getToday() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+
+function formatDateKey(year, monthIndex, day) {
+  const month = String(monthIndex + 1).padStart(2, "0");
+  const date = String(day).padStart(2, "0");
+  return `${year}-${month}-${date}`;
+}
+
+
+function parseLocalDate(dateString) {
+  return new Date(`${dateString}T00:00:00`);
+}
+
+
+function escapeHTML(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+function safeNumber(value) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+
+function valueOrZero(input) {
+  const value = safeNumber(input.value);
+  return value === null ? 0 : value;
+}
+
+
+function csvCell(value) {
+  const text = value === null || value === undefined ? "" : String(value);
+  return `"${text.replaceAll('"', '""')}"`;
+}
+
+
+function downloadTextFile(filename, text, mimeType) {
+  const blob = new Blob([text], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+
+function calculateEstimatedOneRm(weight, reps) {
+  const w = Number(weight);
+  const r = Number(reps);
+
+  if (!Number.isFinite(w) || !Number.isFinite(r) || w <= 0 || r <= 0) {
+    return null;
+  }
+
+  return w * (1 + r / 30);
+}
+
+
+// =========================================
+// 保存データ読み込み
+// =========================================
+
+function loadArrayFromStorage(key) {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(key));
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.error(`${key} の読み込みに失敗しました`, error);
+    return [];
+  }
+}
+
+
+function loadSettings() {
+  const defaultSettings = {
+    proteinTarget: 120
+  };
+
+  try {
+    const parsed = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY));
+
+    if (!parsed || typeof parsed !== "object") {
+      return defaultSettings;
+    }
+
+    const proteinTarget = safeNumber(parsed.proteinTarget);
+
+    return {
+      proteinTarget:
+        proteinTarget !== null && proteinTarget > 0
+          ? proteinTarget
+          : defaultSettings.proteinTarget
+    };
+  } catch (error) {
+    console.error("設定の読み込みに失敗しました", error);
+    return defaultSettings;
+  }
+}
+
+
+let workouts = loadArrayFromStorage(WORKOUT_STORAGE_KEY);
+let dailyLogs = loadArrayFromStorage(DAILY_STORAGE_KEY);
+let settings = loadSettings();
+
+
+function saveWorkoutsToStorage() {
+  localStorage.setItem(WORKOUT_STORAGE_KEY, JSON.stringify(workouts));
+}
+
+
+function saveDailyLogsToStorage() {
+  localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(dailyLogs));
+}
+
+
+function saveSettingsToStorage() {
+  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+}
+
+
+// =========================================
+// 食事データ互換処理
+// =========================================
+
+function getMealsFromLog(log) {
+  if (log.meals && typeof log.meals === "object") {
+    return {
+      breakfast: safeNumber(log.meals.breakfast) ?? 0,
+      lunch: safeNumber(log.meals.lunch) ?? 0,
+      dinner: safeNumber(log.meals.dinner) ?? 0,
+      snack: safeNumber(log.meals.snack) ?? 0,
+      other: safeNumber(log.meals.other) ?? 0
+    };
+  }
+
+  // 旧バージョンは1日の合計しか持っていないので、
+  // 「その他・プロテイン」に入れて合計を維持する。
+  const legacyProtein = safeNumber(log.protein);
+
+  return {
+    breakfast: 0,
+    lunch: 0,
+    dinner: 0,
+    snack: 0,
+    other: legacyProtein ?? 0
+  };
+}
+
+
+function getProteinTotalFromLog(log) {
+  const savedTotal = safeNumber(log.protein);
+
+  if (savedTotal !== null) {
+    return savedTotal;
+  }
+
+  if (!log.meals) {
+    return null;
+  }
+
+  const meals = getMealsFromLog(log);
+  return meals.breakfast + meals.lunch + meals.dinner + meals.snack + meals.other;
+}
+
+
+function hasProteinData(log) {
+  return getProteinTotalFromLog(log) !== null;
+}
+
+
+// =========================================
+// 初期日付・設定
+// =========================================
+
+dateInput.value = getToday();
+dailyDateInput.value = getToday();
+proteinTargetInput.value = settings.proteinTarget;
+
+
+// =========================================
+// 種目候補
+// =========================================
+
+function updateExerciseList() {
+  const bodyPart = bodyPartInput.value;
+  exerciseList.innerHTML = "";
+
+  let exercises = [];
+
+  if (!bodyPart) {
+    exercises = Object.values(exercisesByBodyPart).flat();
+  } else {
+    exercises = exercisesByBodyPart[bodyPart] || [];
+  }
+
+  // 過去に自分で入力した種目も候補に含める。
+  workouts.forEach(workout => {
+    const exercise = String(workout.exercise || "").trim();
+    const workoutBodyPart = getWorkoutBodyPart(workout);
+
+    if (!exercise) {
+      return;
+    }
+
+    if (!bodyPart || workoutBodyPart === bodyPart) {
+      exercises.push(exercise);
+    }
+  });
+
+  [...new Set(exercises)]
+    .sort((a, b) => a.localeCompare(b, "ja"))
+    .forEach(exercise => {
+      const option = document.createElement("option");
+      option.value = exercise;
+      exerciseList.appendChild(option);
+    });
+}
+
+
+function getBodyPartFromExercise(exercise) {
+  return exerciseBodyPartMap[exercise] || "";
+}
+
+
+function getWorkoutBodyPart(workout) {
+  if (workout.bodyPart) {
+    return workout.bodyPart;
+  }
+
+  return getBodyPartFromExercise(workout.exercise) || "未分類";
+}
+
+
+// =========================================
+// セット入力
+// =========================================
+
+function addSet(weight = "", reps = "") {
+  const row = document.createElement("div");
+  row.className = "set-row";
+
+  row.innerHTML = `
+    <div class="set-number"></div>
+
+    <input
+      type="number"
+      class="set-weight"
+      placeholder="60"
+      step="0.5"
+      min="0"
+      value="${weight}"
+    >
+
+    <input
+      type="number"
+      class="set-reps"
+      placeholder="10"
+      step="1"
+      min="0"
+      value="${reps}"
+    >
+
+    <button
+      class="delete-set"
+      type="button"
+      aria-label="セットを削除"
+    >×</button>
+  `;
+
+  row.querySelector(".delete-set").addEventListener("click", () => {
+    row.remove();
+    updateSetNumbers();
+  });
+
+  setsContainer.appendChild(row);
+  updateSetNumbers();
+}
+
+
+function updateSetNumbers() {
+  document.querySelectorAll(".set-row").forEach((row, index) => {
+    row.querySelector(".set-number").textContent = index + 1;
+  });
+}
+
+
+function createEmptySets() {
+  setsContainer.innerHTML = "";
+  addSet();
+  addSet();
+  addSet();
+}
+
+
+// =========================================
+// 前回トレーニング
+// =========================================
+
+function getPreviousWorkout(exercise) {
+  return [...workouts]
+    .filter(workout =>
+      workout.exercise === exercise &&
+      workout.id !== editingWorkoutId
+    )
+    .sort((a, b) => {
+      const dateCompare = String(b.date).localeCompare(String(a.date));
+      return dateCompare !== 0 ? dateCompare : Number(b.id) - Number(a.id);
+    })[0];
+}
+
+
+function displayPreviousRecord() {
+  const exercise = exerciseInput.value.trim();
+
+  if (!exercise) {
+    previousContent.textContent = "種目を入力すると表示されます";
+    return;
+  }
+
+  const previous = getPreviousWorkout(exercise);
+
+  if (!previous) {
+    previousContent.textContent = "この種目の記録はまだありません";
+    return;
+  }
+
+  let html = `<div>${escapeHTML(previous.date)}</div>`;
+
+  previous.sets.forEach((set, index) => {
+    html += `
+      <div>
+        ${index + 1}セット目：${Number(set.weight)}kg × ${Number(set.reps)}回
+      </div>
+    `;
+  });
+
+  previousContent.innerHTML = html;
+}
+
+
+function autoFillPreviousRecord() {
+  const exercise = exerciseInput.value.trim();
+
+  if (!exercise) {
+    createEmptySets();
+    return;
+  }
+
+  const previous = getPreviousWorkout(exercise);
+
+  if (!previous) {
+    createEmptySets();
+    return;
+  }
+
+  setsContainer.innerHTML = "";
+
+  previous.sets.forEach(set => {
+    addSet(set.weight, set.reps);
+  });
+}
+
+
+// =========================================
+// トレーニング編集
+// =========================================
+
+function resetWorkoutEditMode() {
+  editingWorkoutId = null;
+  saveButton.textContent = "トレーニングを保存";
+  cancelEditButton.style.display = "none";
+  editNotice.style.display = "none";
+}
+
+
+function resetWorkoutForm() {
+  dateInput.value = getToday();
+  bodyPartInput.value = "";
+  exerciseInput.value = "";
+  updateExerciseList();
+  createEmptySets();
+  displayPreviousRecord();
+}
+
+
+function startEditingWorkout(id) {
+  const workout = workouts.find(item => Number(item.id) === Number(id));
+
+  if (!workout) {
+    return;
+  }
+
+  editingWorkoutId = Number(id);
+  dateInput.value = workout.date;
+
+  const bodyPart = getWorkoutBodyPart(workout);
+  bodyPartInput.value = bodyPart === "未分類" ? "" : bodyPart;
+
+  updateExerciseList();
+  exerciseInput.value = workout.exercise;
+  setsContainer.innerHTML = "";
+
+  workout.sets.forEach(set => {
+    addSet(set.weight, set.reps);
+  });
+
+  saveButton.textContent = "変更を保存";
+  cancelEditButton.style.display = "block";
+  editNotice.style.display = "block";
+  displayPreviousRecord();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+// =========================================
+// トレーニング履歴
+// =========================================
+
+function displayHistory() {
+  historyDiv.innerHTML = "";
+
+  const selectedBodyPart = historyFilter.value;
+
+  let sorted = [...workouts].sort((a, b) => {
+    const dateCompare = String(b.date).localeCompare(String(a.date));
+    return dateCompare !== 0 ? dateCompare : Number(b.id) - Number(a.id);
+  });
+
+  if (selectedBodyPart !== "すべて") {
+    sorted = sorted.filter(
+      workout => getWorkoutBodyPart(workout) === selectedBodyPart
+    );
+  }
+
+  if (sorted.length === 0) {
+    historyDiv.innerHTML = "<p>該当する記録がありません。</p>";
+    return;
+  }
+
+  sorted.forEach(workout => {
+    const card = document.createElement("div");
+    card.className = "history-card";
+
+    const setsHTML = workout.sets
+      .map((set, index) => `
+        <div class="history-set">
+          ${index + 1}セット目 ${Number(set.weight)}kg × ${Number(set.reps)}回
+        </div>
+      `)
+      .join("");
+
+    card.innerHTML = `
+      <div class="history-top">
+        <div class="history-date">${escapeHTML(workout.date)}</div>
+        <div class="body-part-badge">${escapeHTML(getWorkoutBodyPart(workout))}</div>
+      </div>
+
+      <div class="history-exercise">${escapeHTML(workout.exercise)}</div>
+      ${setsHTML}
+
+      <div class="history-actions">
+        <button class="edit-workout" data-id="${workout.id}" type="button">編集</button>
+        <button class="delete-workout" data-id="${workout.id}" type="button">削除</button>
+      </div>
+    `;
+
+    historyDiv.appendChild(card);
+  });
+
+  document.querySelectorAll(".edit-workout").forEach(button => {
+    button.addEventListener("click", () => {
+      startEditingWorkout(Number(button.dataset.id));
+    });
+  });
+
+  document.querySelectorAll(".delete-workout").forEach(button => {
+    button.addEventListener("click", () => {
+      const id = Number(button.dataset.id);
+
+      if (!confirm("この記録を削除しますか？")) {
+        return;
+      }
+
+      workouts = workouts.filter(workout => Number(workout.id) !== id);
+      saveWorkoutsToStorage();
+
+      if (editingWorkoutId === id) {
+        resetWorkoutEditMode();
+        resetWorkoutForm();
+      }
+
+      refreshWorkoutDependentAreas();
+    });
+  });
+}
+
+
+// =========================================
+// トレーニング保存
+// =========================================
+
+saveButton.addEventListener("click", () => {
+  const date = dateInput.value;
+  const bodyPart = bodyPartInput.value;
+  const exercise = exerciseInput.value.trim();
+
+  if (!date) {
+    alert("日付を入力してください");
+    return;
+  }
+
+  if (!bodyPart) {
+    alert("部位を選択してください");
+    return;
+  }
+
+  if (!exercise) {
+    alert("種目を入力してください");
+    return;
+  }
+
+  const sets = [];
+
+  document.querySelectorAll(".set-row").forEach(row => {
+    const weightText = row.querySelector(".set-weight").value;
+    const repsText = row.querySelector(".set-reps").value;
+
+    if (weightText !== "" && repsText !== "") {
+      const weight = Number(weightText);
+      const reps = Number(repsText);
+
+      if (Number.isFinite(weight) && Number.isFinite(reps)) {
+        sets.push({ weight, reps });
+      }
+    }
+  });
+
+  if (sets.length === 0) {
+    alert("重量と回数を入力してください");
+    return;
+  }
+
+  const isEditing = editingWorkoutId !== null;
+
+  if (isEditing) {
+    const index = workouts.findIndex(
+      workout => Number(workout.id) === Number(editingWorkoutId)
+    );
+
+    if (index !== -1) {
+      workouts[index] = {
+        id: editingWorkoutId,
+        date,
+        bodyPart,
+        exercise,
+        sets
+      };
+    }
+  } else {
+    workouts.push({
+      id: Date.now(),
+      date,
+      bodyPart,
+      exercise,
+      sets
+    });
+  }
+
+  saveWorkoutsToStorage();
+  resetWorkoutEditMode();
+  resetWorkoutForm();
+  refreshWorkoutDependentAreas();
+
+  alert(isEditing ? "記録を更新しました！" : "トレーニングを保存しました！");
+});
+
+
+// =========================================
+// トレーニング操作イベント
+// =========================================
+
+addSetButton.addEventListener("click", () => {
+  addSet();
+});
+
+
+bodyPartInput.addEventListener("change", () => {
+  const selectedBodyPart = bodyPartInput.value;
+  const currentExercise = exerciseInput.value.trim();
+  const currentExerciseBodyPart = getBodyPartFromExercise(currentExercise);
+
+  if (
+    currentExercise &&
+    currentExerciseBodyPart &&
+    currentExerciseBodyPart !== selectedBodyPart
+  ) {
+    exerciseInput.value = "";
+    createEmptySets();
+    displayPreviousRecord();
+  }
+
+  updateExerciseList();
+});
+
+
+exerciseInput.addEventListener("input", displayPreviousRecord);
+
+
+exerciseInput.addEventListener("change", () => {
+  const exercise = exerciseInput.value.trim();
+  const detectedBodyPart = getBodyPartFromExercise(exercise);
+
+  if (detectedBodyPart) {
+    bodyPartInput.value = detectedBodyPart;
+    updateExerciseList();
+  }
+
+  displayPreviousRecord();
+  autoFillPreviousRecord();
+});
+
+
+cancelEditButton.addEventListener("click", () => {
+  resetWorkoutEditMode();
+  resetWorkoutForm();
+});
+
+
+historyFilter.addEventListener("change", displayHistory);
+
+
+// =========================================
+// タンパク質目標
+// =========================================
+
+function updateProteinEntryPreview() {
+  const mealInputs = [
+    proteinBreakfastInput,
+    proteinLunchInput,
+    proteinDinnerInput,
+    proteinSnackInput,
+    proteinOtherInput
+  ];
+
+  const total = mealInputs.reduce((sum, input) => sum + valueOrZero(input), 0);
+  const target = settings.proteinTarget;
+  const percentage = target > 0 ? (total / target) * 100 : 0;
+
+  proteinTotalValue.textContent = `${total.toFixed(0)} g`;
+  proteinAchievementValue.textContent = `${Math.round(percentage)}%`;
+  proteinProgressBar.style.width = `${Math.min(percentage, 100)}%`;
+}
+
+
+[
+  proteinBreakfastInput,
+  proteinLunchInput,
+  proteinDinnerInput,
+  proteinSnackInput,
+  proteinOtherInput
+].forEach(input => {
+  input.addEventListener("input", updateProteinEntryPreview);
+});
+
+
+saveTargetButton.addEventListener("click", () => {
+  const target = Number(proteinTargetInput.value);
+
+  if (!Number.isFinite(target) || target <= 0) {
+    alert("タンパク質目標を正しく入力してください");
+    return;
+  }
+
+  settings.proteinTarget = target;
+  saveSettingsToStorage();
+  updateProteinEntryPreview();
+  refreshDailyArea();
+  renderCalendar();
+
+  alert(`1日のタンパク質目標を ${target}g に設定しました！`);
+});
+
+
+// =========================================
+// 体重・栄養フォーム
+// =========================================
+
+function getMealInputsState() {
+  const entries = {
+    breakfast: proteinBreakfastInput.value.trim(),
+    lunch: proteinLunchInput.value.trim(),
+    dinner: proteinDinnerInput.value.trim(),
+    snack: proteinSnackInput.value.trim(),
+    other: proteinOtherInput.value.trim()
+  };
+
+  const hasAnyProteinInput = Object.values(entries).some(value => value !== "");
+
+  const meals = {
+    breakfast: entries.breakfast === "" ? 0 : Number(entries.breakfast),
+    lunch: entries.lunch === "" ? 0 : Number(entries.lunch),
+    dinner: entries.dinner === "" ? 0 : Number(entries.dinner),
+    snack: entries.snack === "" ? 0 : Number(entries.snack),
+    other: entries.other === "" ? 0 : Number(entries.other)
+  };
+
+  return {
+    meals,
+    hasAnyProteinInput
+  };
+}
+
+
+function resetDailyEditMode() {
+  editingDailyLogId = null;
+  saveDailyButton.textContent = "体重・栄養記録を保存";
+  cancelDailyEditButton.style.display = "none";
+  dailyEditNotice.style.display = "none";
+}
+
+
+function resetDailyForm() {
+  dailyDateInput.value = getToday();
+  weightInput.value = "";
+  proteinBreakfastInput.value = "";
+  proteinLunchInput.value = "";
+  proteinDinnerInput.value = "";
+  proteinSnackInput.value = "";
+  proteinOtherInput.value = "";
+  updateProteinEntryPreview();
+}
+
+
+function startEditingDailyLog(id) {
+  const log = dailyLogs.find(item => Number(item.id) === Number(id));
+
+  if (!log) {
+    return;
+  }
+
+  editingDailyLogId = Number(id);
+  dailyDateInput.value = log.date;
+  weightInput.value = log.weight ?? "";
+
+  const meals = getMealsFromLog(log);
+  proteinBreakfastInput.value = meals.breakfast || "";
+  proteinLunchInput.value = meals.lunch || "";
+  proteinDinnerInput.value = meals.dinner || "";
+  proteinSnackInput.value = meals.snack || "";
+  proteinOtherInput.value = meals.other || "";
+
+  updateProteinEntryPreview();
+
+  saveDailyButton.textContent = "変更を保存";
+  cancelDailyEditButton.style.display = "block";
+  dailyEditNotice.style.display = "block";
+
+  document.getElementById("dailySection").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+
+saveDailyButton.addEventListener("click", () => {
+  const date = dailyDateInput.value;
+  const weightText = weightInput.value.trim();
+  const { meals, hasAnyProteinInput } = getMealInputsState();
+
+  if (!date) {
+    alert("日付を入力してください");
+    return;
+  }
+
+  const weight = weightText === "" ? null : Number(weightText);
+
+  if (weight !== null && (!Number.isFinite(weight) || weight <= 0)) {
+    alert("体重を正しく入力してください");
+    return;
+  }
+
+  const mealValues = Object.values(meals);
+
+  if (mealValues.some(value => !Number.isFinite(value) || value < 0)) {
+    alert("タンパク質量を正しく入力してください");
+    return;
+  }
+
+  if (weight === null && !hasAnyProteinInput) {
+    alert("体重かタンパク質のどちらかを入力してください");
+    return;
+  }
+
+  const protein = hasAnyProteinInput
+    ? mealValues.reduce((sum, value) => sum + value, 0)
+    : null;
+
+  const isEditing = editingDailyLogId !== null;
+
+  if (isEditing) {
+    const conflict = dailyLogs.find(
+      log => log.date === date && Number(log.id) !== Number(editingDailyLogId)
+    );
+
+    if (conflict) {
+      alert("その日付の記録はすでにあります。既存の記録を編集してください。");
+      return;
+    }
+
+    const index = dailyLogs.findIndex(
+      log => Number(log.id) === Number(editingDailyLogId)
+    );
+
+    if (index !== -1) {
+      dailyLogs[index] = {
+        id: editingDailyLogId,
+        date,
+        weight,
+        protein,
+        meals: hasAnyProteinInput ? meals : null
+      };
+    }
+  } else {
+    const sameDateLog = dailyLogs.find(log => log.date === date);
+
+    if (sameDateLog) {
+      // 同じ日の記録を追加するときは、入力した項目だけ更新する。
+      // 例えば体重だけ追加入力しても、すでにあるタンパク質記録は消さない。
+      if (weight !== null) {
+        sameDateLog.weight = weight;
+      }
+
+      if (hasAnyProteinInput) {
+        sameDateLog.protein = protein;
+        sameDateLog.meals = meals;
+      }
+    } else {
+      dailyLogs.push({
+        id: Date.now(),
+        date,
+        weight,
+        protein,
+        meals: hasAnyProteinInput ? meals : null
+      });
+    }
+  }
+
+  saveDailyLogsToStorage();
+  resetDailyEditMode();
+  resetDailyForm();
+  refreshDailyArea();
+  renderCalendar();
+
+  alert(isEditing ? "体重・栄養記録を更新しました！" : "体重・栄養記録を保存しました！");
+});
+
+
+cancelDailyEditButton.addEventListener("click", () => {
+  resetDailyEditMode();
+  resetDailyForm();
+});
+
+
+// =========================================
+// 日次記録の並び替え
+// =========================================
+
+function getSortedDailyLogsAscending() {
+  return [...dailyLogs].sort((a, b) => {
+    const dateCompare = String(a.date).localeCompare(String(b.date));
+    return dateCompare !== 0 ? dateCompare : Number(a.id) - Number(b.id);
+  });
+}
+
+
+function getWeightLogsAscending() {
+  return getSortedDailyLogsAscending().filter(log => {
+    const weight = safeNumber(log.weight);
+    return weight !== null && weight > 0;
+  });
+}
+
+
+function getLogsWithinLastSevenDays() {
+  const today = parseLocalDate(getToday());
+  const startDate = new Date(today);
+  startDate.setDate(startDate.getDate() - 6);
+
+  return dailyLogs.filter(log => {
+    if (!log.date) {
+      return false;
+    }
+
+    const date = parseLocalDate(log.date);
+    return date >= startDate && date <= today;
+  });
+}
+
+
+
+// =========================================
+// タブ切り替え
+// =========================================
+
+function activateTab(tabName, scrollToTop = true) {
+  tabButtons.forEach(button => {
+    const isActive = button.dataset.tab === tabName;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+
+  tabPanels.forEach(panel => {
+    panel.classList.toggle("active", panel.dataset.tabPanel === tabName);
+  });
+
+  if (tabName === "home") {
+    updateHomeDashboard();
+  }
+
+  if (tabName === "analysis") {
+    requestAnimationFrame(() => {
+      updateDailyStats();
+      drawWeightChart();
+      renderCalendar();
+      updateExerciseAnalysis();
+    });
+  }
+
+  if (scrollToTop) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+
+tabButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    activateTab(button.dataset.tab);
+  });
+});
+
+
+quickTabButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    activateTab(button.dataset.openTab);
+  });
+});
+
+
+// =========================================
+// ホーム画面
+// =========================================
+
+function getWeekRangeMondayToToday() {
+  const today = parseLocalDate(getToday());
+  const day = today.getDay();
+  const daysFromMonday = day === 0 ? 6 : day - 1;
+  const start = new Date(today);
+  start.setDate(start.getDate() - daysFromMonday);
+  return { start, end: today };
+}
+
+
+function updateHomeDashboard() {
+  const now = new Date();
+  homeDateLabel.textContent = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+
+  const weightLogs = getWeightLogsAscending();
+
+  if (weightLogs.length > 0) {
+    const latest = Number(weightLogs[weightLogs.length - 1].weight);
+    homeWeightValue.textContent = `${latest.toFixed(1)} kg`;
+
+    if (weightLogs.length >= 2) {
+      const previous = Number(weightLogs[weightLogs.length - 2].weight);
+      const diff = latest - previous;
+      const sign = diff > 0 ? "+" : "";
+      homeWeightChange.textContent = `前回比 ${sign}${diff.toFixed(1)} kg`;
+    } else {
+      homeWeightChange.textContent = "前回比 --";
+    }
+  } else {
+    homeWeightValue.textContent = "-- kg";
+    homeWeightChange.textContent = "前回比 --";
+  }
+
+  const lastSevenDays = getLogsWithinLastSevenDays();
+  const sevenDayWeights = lastSevenDays
+    .map(log => safeNumber(log.weight))
+    .filter(value => value !== null && value > 0);
+
+  if (sevenDayWeights.length > 0) {
+    const average = sevenDayWeights.reduce((sum, value) => sum + value, 0) / sevenDayWeights.length;
+    homeWeightAverage.textContent = `${average.toFixed(1)} kg`;
+  } else {
+    homeWeightAverage.textContent = "-- kg";
+  }
+
+  const todayLog = dailyLogs.find(log => log.date === getToday());
+  const todayProtein = todayLog ? getProteinTotalFromLog(todayLog) : null;
+  const target = settings.proteinTarget;
+
+  if (todayProtein === null) {
+    homeProteinValue.textContent = `-- / ${target.toFixed(0)} g`;
+    homeProteinStatus.textContent = "まだタンパク質記録がありません";
+    homeProteinProgressBar.style.width = "0%";
+  } else {
+    const percentage = target > 0 ? (todayProtein / target) * 100 : 0;
+    homeProteinValue.textContent = `${todayProtein.toFixed(0)} / ${target.toFixed(0)} g`;
+    homeProteinProgressBar.style.width = `${Math.min(percentage, 100)}%`;
+
+    if (todayProtein >= target) {
+      homeProteinStatus.textContent = `目標達成！ ${Math.round(percentage)}%`;
+    } else {
+      homeProteinStatus.textContent = `あと ${(target - todayProtein).toFixed(0)}g（${Math.round(percentage)}%）`;
+    }
+  }
+
+  const { start, end } = getWeekRangeMondayToToday();
+  const weekWorkouts = workouts.filter(workout => {
+    if (!workout.date) return false;
+    const date = parseLocalDate(workout.date);
+    return date >= start && date <= end;
+  });
+
+  const workoutDays = new Set(weekWorkouts.map(workout => workout.date)).size;
+  const setCount = weekWorkouts.reduce((sum, workout) => {
+    return sum + (Array.isArray(workout.sets) ? workout.sets.length : 0);
+  }, 0);
+
+  const volume = weekWorkouts.reduce((total, workout) => {
+    if (!Array.isArray(workout.sets)) return total;
+    return total + workout.sets.reduce((subtotal, set) => {
+      const weight = safeNumber(set.weight) ?? 0;
+      const reps = safeNumber(set.reps) ?? 0;
+      return subtotal + weight * reps;
+    }, 0);
+  }, 0);
+
+  homeWeekWorkoutDays.textContent = `${workoutDays}日`;
+  homeWeekSets.textContent = `${setCount}`;
+  homeWeekVolume.textContent = `${Math.round(volume).toLocaleString()}kg`;
+
+  const latestWorkout = [...workouts].sort((a, b) => {
+    const dateCompare = String(b.date).localeCompare(String(a.date));
+    return dateCompare !== 0 ? dateCompare : Number(b.id) - Number(a.id);
+  })[0];
+
+  if (!latestWorkout) {
+    homeLastWorkout.textContent = "まだ記録がありません";
+    homeLastWorkoutDetail.textContent = "";
+    return;
+  }
+
+  homeLastWorkout.textContent = `${latestWorkout.date}  ${latestWorkout.exercise}`;
+
+  const sets = Array.isArray(latestWorkout.sets) ? latestWorkout.sets : [];
+  if (sets.length === 0) {
+    homeLastWorkoutDetail.textContent = getWorkoutBodyPart(latestWorkout);
+    return;
+  }
+
+  const bestSet = [...sets].sort((a, b) => {
+    const weightDiff = (safeNumber(b.weight) ?? 0) - (safeNumber(a.weight) ?? 0);
+    if (weightDiff !== 0) return weightDiff;
+    return (safeNumber(b.reps) ?? 0) - (safeNumber(a.reps) ?? 0);
+  })[0];
+
+  homeLastWorkoutDetail.textContent = `${getWorkoutBodyPart(latestWorkout)} ・ ${bestSet.weight}kg × ${bestSet.reps}回`;
+}
+
+
+// =========================================
+// ダッシュボード
+// =========================================
+
+function updateDailyStats() {
+  const weightLogs = getWeightLogsAscending();
+
+  if (weightLogs.length > 0) {
+    const latestWeight = Number(weightLogs[weightLogs.length - 1].weight);
+    currentWeightValue.textContent = `${latestWeight.toFixed(1)} kg`;
+  } else {
+    currentWeightValue.textContent = "-- kg";
+  }
+
+  if (weightLogs.length >= 2) {
+    const latest = Number(weightLogs[weightLogs.length - 1].weight);
+    const previous = Number(weightLogs[weightLogs.length - 2].weight);
+    const diff = latest - previous;
+    const sign = diff > 0 ? "+" : "";
+    weightChangeValue.textContent = `${sign}${diff.toFixed(1)} kg`;
+  } else {
+    weightChangeValue.textContent = "-- kg";
+  }
+
+  const lastSevenDays = getLogsWithinLastSevenDays();
+
+  const sevenDayWeights = lastSevenDays
+    .map(log => safeNumber(log.weight))
+    .filter(value => value !== null && value > 0);
+
+  if (sevenDayWeights.length > 0) {
+    const average = sevenDayWeights.reduce((sum, value) => sum + value, 0) / sevenDayWeights.length;
+    weightAverageValue.textContent = `${average.toFixed(1)} kg`;
+  } else {
+    weightAverageValue.textContent = "-- kg";
+  }
+
+  const sevenDayProteins = lastSevenDays
+    .map(log => getProteinTotalFromLog(log))
+    .filter(value => value !== null);
+
+  if (sevenDayProteins.length > 0) {
+    const average = sevenDayProteins.reduce((sum, value) => sum + value, 0) / sevenDayProteins.length;
+    proteinAverageValue.textContent = `${average.toFixed(0)} g`;
+  } else {
+    proteinAverageValue.textContent = "-- g";
+  }
+
+  const todayLog = dailyLogs.find(log => log.date === getToday());
+  const todayProtein = todayLog ? getProteinTotalFromLog(todayLog) : null;
+  const target = settings.proteinTarget;
+
+  if (todayProtein === null) {
+    todayProteinValue.textContent = `-- / ${target.toFixed(0)} g`;
+    todayProteinStatus.textContent = "まだタンパク質記録がありません";
+  } else {
+    const percentage = target > 0 ? (todayProtein / target) * 100 : 0;
+    todayProteinValue.textContent = `${todayProtein.toFixed(0)} / ${target.toFixed(0)} g`;
+
+    if (todayProtein >= target) {
+      todayProteinStatus.textContent = `目標達成！ ${Math.round(percentage)}%`;
+    } else {
+      const remaining = target - todayProtein;
+      todayProteinStatus.textContent = `あと ${remaining.toFixed(0)}g で目標達成（${Math.round(percentage)}%）`;
+    }
+  }
+}
+
+
+// =========================================
+// 体重・栄養履歴
+// =========================================
+
+function displayDailyHistory() {
+  dailyHistoryDiv.innerHTML = "";
+
+  const sorted = [...dailyLogs].sort((a, b) => {
+    const dateCompare = String(b.date).localeCompare(String(a.date));
+    return dateCompare !== 0 ? dateCompare : Number(b.id) - Number(a.id);
+  });
+
+  if (sorted.length === 0) {
+    dailyHistoryDiv.innerHTML = "<p>まだ体重・栄養記録がありません。</p>";
+    return;
+  }
+
+  sorted.forEach(log => {
+    const card = document.createElement("div");
+    card.className = "daily-history-card";
+
+    const weight = safeNumber(log.weight);
+    const protein = getProteinTotalFromLog(log);
+    const meals = getMealsFromLog(log);
+
+    const weightText = weight === null ? "--" : `${weight.toFixed(1)} kg`;
+    const proteinText = protein === null ? "--" : `${protein.toFixed(0)} g`;
+
+    const mealDetail = protein === null
+      ? "タンパク質内訳なし"
+      : [
+          `朝 ${meals.breakfast.toFixed(0)}g`,
+          `昼 ${meals.lunch.toFixed(0)}g`,
+          `夜 ${meals.dinner.toFixed(0)}g`,
+          `間食 ${meals.snack.toFixed(0)}g`,
+          `その他 ${meals.other.toFixed(0)}g`
+        ].join(" / ");
+
+    card.innerHTML = `
+      <div class="daily-history-date">${escapeHTML(log.date)}</div>
+
+      <div class="daily-history-values">
+        <div>
+          <span>体重</span>
+          <strong>${weightText}</strong>
+        </div>
+
+        <div>
+          <span>タンパク質</span>
+          <strong>${proteinText}</strong>
+        </div>
+      </div>
+
+      <div class="daily-meal-detail">${escapeHTML(mealDetail)}</div>
+
+      <div class="history-actions">
+        <button class="edit-daily-log" data-id="${log.id}" type="button">編集</button>
+        <button class="delete-daily-log" data-id="${log.id}" type="button">削除</button>
+      </div>
+    `;
+
+    dailyHistoryDiv.appendChild(card);
+  });
+
+  document.querySelectorAll(".edit-daily-log").forEach(button => {
+    button.addEventListener("click", () => {
+      startEditingDailyLog(Number(button.dataset.id));
+    });
+  });
+
+  document.querySelectorAll(".delete-daily-log").forEach(button => {
+    button.addEventListener("click", () => {
+      const id = Number(button.dataset.id);
+
+      if (!confirm("この体重・栄養記録を削除しますか？")) {
+        return;
+      }
+
+      dailyLogs = dailyLogs.filter(log => Number(log.id) !== id);
+      saveDailyLogsToStorage();
+
+      if (editingDailyLogId === id) {
+        resetDailyEditMode();
+        resetDailyForm();
+      }
+
+      refreshDailyArea();
+      renderCalendar();
+    });
+  });
+}
+
+
+// =========================================
+// 汎用折れ線グラフ
+// =========================================
+
+function prepareCanvas(canvas, logicalHeight = 280) {
+  const ctx = canvas.getContext("2d");
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const width = Math.max(320, Math.floor(rect.width));
+  const height = logicalHeight;
+
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+
+  return { ctx, width, height };
+}
+
+
+function drawLineChart(canvas, points, emptyMessage, valueSuffix = "") {
+  const { ctx, width, height } = prepareCanvas(canvas, 280);
+
+  if (points.length === 0) {
+    ctx.font = "14px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#777";
+    ctx.fillText(emptyMessage, width / 2, height / 2);
+    return;
+  }
+
+  const margin = {
+    top: 22,
+    right: 18,
+    bottom: 44,
+    left: 54
+  };
+
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
+
+  const values = points.map(point => Number(point.value));
+  let minValue = Math.min(...values);
+  let maxValue = Math.max(...values);
+
+  if (minValue === maxValue) {
+    minValue -= 1;
+    maxValue += 1;
+  } else {
+    const padding = Math.max(0.5, (maxValue - minValue) * 0.15);
+    minValue -= padding;
+    maxValue += padding;
+  }
+
+  const xForIndex = index => {
+    if (points.length === 1) {
+      return margin.left + chartWidth / 2;
+    }
+
+    return margin.left + (index / (points.length - 1)) * chartWidth;
+  };
+
+  const yForValue = value => {
+    return margin.top + ((maxValue - value) / (maxValue - minValue)) * chartHeight;
+  };
+
+  ctx.strokeStyle = "#dddddd";
+  ctx.lineWidth = 1;
+  ctx.fillStyle = "#666";
+  ctx.font = "12px sans-serif";
+
+  const gridLines = 4;
+
+  for (let i = 0; i <= gridLines; i++) {
+    const ratio = i / gridLines;
+    const y = margin.top + ratio * chartHeight;
+    const value = maxValue - ratio * (maxValue - minValue);
+
+    ctx.beginPath();
+    ctx.moveTo(margin.left, y);
+    ctx.lineTo(width - margin.right, y);
+    ctx.stroke();
+
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    ctx.fillText(`${value.toFixed(1)}${valueSuffix}`, margin.left - 8, y);
+  }
+
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+
+  points.forEach((point, index) => {
+    const x = xForIndex(index);
+    const y = yForValue(Number(point.value));
+
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+
+  ctx.stroke();
+
+  ctx.fillStyle = "#222";
+
+  points.forEach((point, index) => {
+    const x = xForIndex(index);
+    const y = yForValue(Number(point.value));
+
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  const labelIndexes = new Set([0, points.length - 1]);
+
+  if (points.length > 4) {
+    labelIndexes.add(Math.floor((points.length - 1) / 2));
+  }
+
+  ctx.font = "11px sans-serif";
+  ctx.fillStyle = "#666";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+
+  labelIndexes.forEach(index => {
+    const point = points[index];
+
+    if (!point) {
+      return;
+    }
+
+    ctx.fillText(
+      String(point.label),
+      xForIndex(index),
+      height - margin.bottom + 12
+    );
+  });
+}
+
+
+function drawWeightChart() {
+  const points = getWeightLogsAscending()
+    .slice(-30)
+    .map(log => ({
+      value: Number(log.weight),
+      label: String(log.date).slice(5).replace("-", "/")
+    }));
+
+  drawLineChart(
+    weightChart,
+    points,
+    "体重を記録するとグラフが表示されます"
+  );
+}
+
+
+// =========================================
+// 月間カレンダー
+// =========================================
+
+function renderCalendar() {
+  const year = calendarDate.getFullYear();
+  const month = calendarDate.getMonth();
+  const firstDayOfWeek = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  calendarMonthLabel.textContent = `${year}年 ${month + 1}月`;
+  calendarGrid.innerHTML = "";
+
+  for (let i = 0; i < firstDayOfWeek; i++) {
+    const empty = document.createElement("div");
+    empty.className = "calendar-empty";
+    calendarGrid.appendChild(empty);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateKey = formatDateKey(year, month, day);
+    const log = dailyLogs.find(item => item.date === dateKey);
+    const workoutCount = workouts.filter(item => item.date === dateKey).length;
+    const protein = log ? getProteinTotalFromLog(log) : null;
+    const weight = log ? safeNumber(log.weight) : null;
+    const achieved = protein !== null && protein >= settings.proteinTarget;
+
+    const cell = document.createElement("div");
+    cell.className = "calendar-day";
+
+    if (dateKey === getToday()) {
+      cell.classList.add("today");
+    }
+
+    if (achieved) {
+      cell.classList.add("target-achieved");
+    }
+
+    let html = `<div class="calendar-date-number">${day}</div>`;
+
+    if (weight !== null) {
+      html += `<span class="calendar-data">${weight.toFixed(1)}kg</span>`;
+    }
+
+    if (protein !== null) {
+      html += `<span class="calendar-data ${achieved ? "achievement" : ""}">${achieved ? "✓ " : ""}P ${protein.toFixed(0)}g</span>`;
+    }
+
+    if (workoutCount > 0) {
+      html += `<span class="calendar-data">🏋 ${workoutCount}種目</span>`;
+    }
+
+    cell.innerHTML = html;
+    calendarGrid.appendChild(cell);
+  }
+}
+
+
+previousMonthButton.addEventListener("click", () => {
+  calendarDate = new Date(
+    calendarDate.getFullYear(),
+    calendarDate.getMonth() - 1,
+    1
+  );
+  renderCalendar();
+});
+
+
+nextMonthButton.addEventListener("click", () => {
+  calendarDate = new Date(
+    calendarDate.getFullYear(),
+    calendarDate.getMonth() + 1,
+    1
+  );
+  renderCalendar();
+});
+
+
+// =========================================
+// 自己ベスト・重量推移
+// =========================================
+
+function getAllExerciseNames() {
+  const preset = Object.values(exercisesByBodyPart).flat();
+  const saved = workouts
+    .map(workout => String(workout.exercise || "").trim())
+    .filter(Boolean);
+
+  return [...new Set([...preset, ...saved])]
+    .sort((a, b) => a.localeCompare(b, "ja"));
+}
+
+
+function updateAnalysisExerciseOptions() {
+  const currentValue = analysisExercise.value;
+  const exerciseNames = getAllExerciseNames();
+
+  analysisExercise.innerHTML = "";
+
+  if (exerciseNames.length === 0) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "記録がありません";
+    analysisExercise.appendChild(option);
+    return;
+  }
+
+  exerciseNames.forEach(exercise => {
+    const option = document.createElement("option");
+    option.value = exercise;
+    option.textContent = exercise;
+    analysisExercise.appendChild(option);
+  });
+
+  if (exerciseNames.includes(currentValue)) {
+    analysisExercise.value = currentValue;
+    return;
+  }
+
+  const firstRecordedExercise = exerciseNames.find(exercise =>
+    workouts.some(workout => workout.exercise === exercise)
+  );
+
+  analysisExercise.value = firstRecordedExercise || exerciseNames[0];
+}
+
+
+function getExerciseWorkouts(exercise) {
+  return workouts
+    .filter(workout => workout.exercise === exercise)
+    .sort((a, b) => {
+      const dateCompare = String(a.date).localeCompare(String(b.date));
+      return dateCompare !== 0 ? dateCompare : Number(a.id) - Number(b.id);
+    });
+}
+
+
+function updateExerciseAnalysis() {
+  const exercise = analysisExercise.value;
+  const exerciseWorkouts = getExerciseWorkouts(exercise);
+
+  if (!exercise || exerciseWorkouts.length === 0) {
+    maxWeightValue.textContent = "-- kg";
+    estimatedOneRmValue.textContent = "-- kg";
+    latestExerciseValue.textContent = "まだ記録がありません";
+
+    drawLineChart(
+      exerciseChart,
+      [],
+      "この種目の記録を保存すると重量推移が表示されます"
+    );
+    return;
+  }
+
+  const allSets = exerciseWorkouts.flatMap(workout =>
+    workout.sets.map(set => ({
+      date: workout.date,
+      id: workout.id,
+      weight: Number(set.weight),
+      reps: Number(set.reps)
+    }))
+  );
+
+  const validWeights = allSets
+    .map(set => set.weight)
+    .filter(weight => Number.isFinite(weight));
+
+  const maxWeight = validWeights.length > 0 ? Math.max(...validWeights) : null;
+
+  const oneRmValues = allSets
+    .map(set => calculateEstimatedOneRm(set.weight, set.reps))
+    .filter(value => value !== null);
+
+  const maxOneRm = oneRmValues.length > 0 ? Math.max(...oneRmValues) : null;
+
+  maxWeightValue.textContent = maxWeight === null ? "-- kg" : `${maxWeight.toFixed(1)} kg`;
+  estimatedOneRmValue.textContent = maxOneRm === null ? "-- kg" : `${maxOneRm.toFixed(1)} kg`;
+
+  const latestWorkout = exerciseWorkouts[exerciseWorkouts.length - 1];
+  const latestSetsText = latestWorkout.sets
+    .map(set => `${Number(set.weight)}kg×${Number(set.reps)}`)
+    .join(" / ");
+
+  latestExerciseValue.textContent = `${latestWorkout.date}  ${latestSetsText}`;
+
+  const chartPoints = exerciseWorkouts
+    .map(workout => {
+      const weights = workout.sets
+        .map(set => Number(set.weight))
+        .filter(weight => Number.isFinite(weight));
+
+      if (weights.length === 0) {
+        return null;
+      }
+
+      return {
+        value: Math.max(...weights),
+        label: String(workout.date).slice(5).replace("-", "/")
+      };
+    })
+    .filter(Boolean)
+    .slice(-30);
+
+  drawLineChart(
+    exerciseChart,
+    chartPoints,
+    "この種目の記録を保存すると重量推移が表示されます"
+  );
+}
+
+
+analysisExercise.addEventListener("change", updateExerciseAnalysis);
+
+
+// =========================================
+// バックアップ・CSV
+// =========================================
+
+exportBackupButton.addEventListener("click", () => {
+  const backup = {
+    app: "筋トレ・体重・栄養記録",
+    version: 3,
+    exportedAt: new Date().toISOString(),
+    workouts,
+    dailyLogs,
+    settings
+  };
+
+  downloadTextFile(
+    `workout-backup-${getToday()}.json`,
+    JSON.stringify(backup, null, 2),
+    "application/json;charset=utf-8"
+  );
+});
+
+
+importBackupButton.addEventListener("click", () => {
+  backupFileInput.value = "";
+  backupFileInput.click();
+});
+
+
+backupFileInput.addEventListener("change", async () => {
+  const file = backupFileInput.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  try {
+    const text = await file.text();
+    const backup = JSON.parse(text);
+
+    if (
+      !backup ||
+      !Array.isArray(backup.workouts) ||
+      !Array.isArray(backup.dailyLogs) ||
+      !backup.settings ||
+      typeof backup.settings !== "object"
+    ) {
+      throw new Error("バックアップ形式が正しくありません");
+    }
+
+    if (!confirm("現在のデータをバックアップ内容で置き換えます。よろしいですか？")) {
+      return;
+    }
+
+    workouts = backup.workouts;
+    dailyLogs = backup.dailyLogs;
+
+    const importedTarget = safeNumber(backup.settings.proteinTarget);
+    settings = {
+      proteinTarget: importedTarget !== null && importedTarget > 0 ? importedTarget : 120
+    };
+
+    saveWorkoutsToStorage();
+    saveDailyLogsToStorage();
+    saveSettingsToStorage();
+
+    proteinTargetInput.value = settings.proteinTarget;
+    resetWorkoutEditMode();
+    resetWorkoutForm();
+    resetDailyEditMode();
+    resetDailyForm();
+    refreshAll();
+
+    alert("バックアップを読み込みました！");
+  } catch (error) {
+    console.error(error);
+    alert("バックアップを読み込めませんでした。JSONファイルを確認してください。");
+  }
+});
+
+
+exportDailyCsvButton.addEventListener("click", () => {
+  const header = [
+    "日付",
+    "体重kg",
+    "朝タンパク質g",
+    "昼タンパク質g",
+    "夜タンパク質g",
+    "間食タンパク質g",
+    "その他タンパク質g",
+    "合計タンパク質g",
+    "目標タンパク質g",
+    "達成率%"
+  ];
+
+  const rows = getSortedDailyLogsAscending().map(log => {
+    const meals = getMealsFromLog(log);
+    const protein = getProteinTotalFromLog(log);
+    const weight = safeNumber(log.weight);
+    const percentage = protein === null
+      ? ""
+      : ((protein / settings.proteinTarget) * 100).toFixed(1);
+
+    return [
+      log.date,
+      weight === null ? "" : weight,
+      hasProteinData(log) ? meals.breakfast : "",
+      hasProteinData(log) ? meals.lunch : "",
+      hasProteinData(log) ? meals.dinner : "",
+      hasProteinData(log) ? meals.snack : "",
+      hasProteinData(log) ? meals.other : "",
+      protein === null ? "" : protein,
+      settings.proteinTarget,
+      percentage
+    ];
+  });
+
+  const csv = [header, ...rows]
+    .map(row => row.map(csvCell).join(","))
+    .join("\r\n");
+
+  downloadTextFile(
+    `body-nutrition-${getToday()}.csv`,
+    `\uFEFF${csv}`,
+    "text/csv;charset=utf-8"
+  );
+});
+
+
+exportWorkoutCsvButton.addEventListener("click", () => {
+  const header = [
+    "日付",
+    "部位",
+    "種目",
+    "セット",
+    "重量kg",
+    "回数",
+    "推定1RMkg"
+  ];
+
+  const sorted = [...workouts].sort((a, b) => {
+    const dateCompare = String(a.date).localeCompare(String(b.date));
+    return dateCompare !== 0 ? dateCompare : Number(a.id) - Number(b.id);
+  });
+
+  const rows = [];
+
+  sorted.forEach(workout => {
+    workout.sets.forEach((set, index) => {
+      const oneRm = calculateEstimatedOneRm(set.weight, set.reps);
+
+      rows.push([
+        workout.date,
+        getWorkoutBodyPart(workout),
+        workout.exercise,
+        index + 1,
+        set.weight,
+        set.reps,
+        oneRm === null ? "" : oneRm.toFixed(1)
+      ]);
+    });
+  });
+
+  const csv = [header, ...rows]
+    .map(row => row.map(csvCell).join(","))
+    .join("\r\n");
+
+  downloadTextFile(
+    `workouts-${getToday()}.csv`,
+    `\uFEFF${csv}`,
+    "text/csv;charset=utf-8"
+  );
+});
+
+
+// =========================================
+// 画面更新まとめ
+// =========================================
+
+function refreshDailyArea() {
+  updateDailyStats();
+  displayDailyHistory();
+  updateHomeDashboard();
+  requestAnimationFrame(drawWeightChart);
+}
+
+
+function refreshWorkoutDependentAreas() {
+  updateExerciseList();
+  displayHistory();
+  displayPreviousRecord();
+  updateAnalysisExerciseOptions();
+  updateExerciseAnalysis();
+  renderCalendar();
+  updateHomeDashboard();
+}
+
+
+function refreshAll() {
+  updateExerciseList();
+  displayHistory();
+  displayPreviousRecord();
+  updateProteinEntryPreview();
+  refreshDailyArea();
+  renderCalendar();
+  updateAnalysisExerciseOptions();
+  updateExerciseAnalysis();
+  updateHomeDashboard();
+}
+
+
+window.addEventListener("resize", () => {
+  requestAnimationFrame(() => {
+    drawWeightChart();
+    updateExerciseAnalysis();
+  });
+});
+
+
+// =========================================
+// 初期表示
+// =========================================
+
+createEmptySets();
+refreshAll();
+activateTab("home", false);
+
+  </script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(err => console.warn("Service worker:", err));
+  });
+}
+</script>
+</body>
+</html>
